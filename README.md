@@ -23,22 +23,3 @@ The platform follows a **microservices-based** architecture, consisting of:
 3️⃣ **Presence Service** – Tracks user availability and online status.  
 4️⃣ **API Gateway** – Manages routing, security, and load balancing.  
 
----
-
-## 🚀 **Tech Stack**
-### **🔹 Backend**
-- **Spring Boot** (Java) for core microservices  
-- **Node.js (Express)** for the API Gateway  
-- **Redis** for caching and real-time session management  
-- **PostgreSQL** for user and chat data storage  
-- **Kafka** for asynchronous event-driven communication  
-
-### **🔹 Frontend**
-- **React.js** for a responsive and dynamic UI  
-- **Socket.io** for real-time chat communication  
-
-### **🔹 DevOps & Monitoring**
-- **Docker & Kubernetes** for containerization and orchestration  
-- **OpenSearch** for centralized logging  
-- **Prometheus & Grafana** for system monitoring  
-
