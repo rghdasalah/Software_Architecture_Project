@@ -1,4 +1,4 @@
-# 🚗 Real-Time Ride Coordination Platform
+# 🚗 Real-Time Chat-Based Ride Coordination Platform
 
 ## 📌 Overview
 This project is a **real-time chat-based ride coordination platform** designed for students traveling to similar destinations. It enables users to **authenticate securely, communicate in real-time, and track user presence**, ensuring safer and more efficient transportation planning.
