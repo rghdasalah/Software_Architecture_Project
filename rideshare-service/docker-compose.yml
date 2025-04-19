@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  app:
+    container_name: rideshare-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - SERVER_PORT=8080
+      - DB_HOST=db-primary
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=rideshare
+      - DB_SSLMODE=disable
+    depends_on:
+      - db-primary
+      - db-replica1
+    networks:
+      - rideshare-network
+    volumes:
+      - ./config.yaml:/app/config.yaml
+    restart: unless-stopped
+
+  db-primary:
+    image: postgres:14-alpine
+    container_name: db-primary
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: rideshare
+    volumes:
+      - ./init-scripts/init_schema.pgsql:/docker-entrypoint-initdb.d/init.sql
+      - pg-primary-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - rideshare-network
+    restart: unless-stopped
+
+  db-replica1:
+    image: postgres:14-alpine
+    container_name: db-replica1
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: rideshare
+    volumes:
+      - ./init-scripts/init_schema.pgsql:/docker-entrypoint-initdb.d/init.sql
+      - pg-replica1-data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    networks:
+      - rideshare-network
+    restart: unless-stopped
+
+networks:
+  rideshare-network:
+    driver: bridge
+
+volumes:
+  pg-primary-data:
+  pg-replica1-data:
