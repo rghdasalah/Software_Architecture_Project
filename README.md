@@ -1,25 +1,17 @@
-# 🚗 Real-Time Chat-Based Ride Coordination Platform
+**🚘 Student Ride Sharing API**
+A RESTful API platform that enables students to connect through shared rides — whether they're offering a ride or looking for one. This backend service supports user authentication, ride management, real-time search, and request tracking via both synchronous and asynchronous communication.
 
-## 📌 Overview
-This project is a **real-time chat-based ride coordination platform** designed for students traveling to similar destinations. It enables users to **authenticate securely, communicate in real-time, and track user presence**, ensuring safer and more efficient transportation planning.
+**📌 Project Overview**
+This project provides a modular, microservices-style API for a student ride-sharing platform. It includes:
 
-## 📜 Features
-✅ **User Authentication:** OAuth2-based login with Google.  
-✅ **Real-Time Chat:** Instant messaging between users looking for rides.  
-✅ **Presence Service:** Tracks online/offline status of users.  
-✅ **Microservices Architecture:** Authentication, chat, and presence as independent services.  
-✅ **API Gateway:** Secure, unified access to all microservices.  
-✅ **Scalable Database:** PostgreSQL with sharding considerations.  
-✅ **Caching & Optimization:** Redis for session management and message storage.  
-✅ **Monitoring & Logging:** OpenSearch for centralized logging and system observability.  
+🔐 Authentication & User Profiles
 
----
+🚗 Ride Offering Service
 
-## 🏗️ **System Architecture**
-The platform follows a **microservices-based** architecture, consisting of:  
+🙋 Ride Request & Join Service
 
-1️⃣ **Authentication Service** – Handles user login via OAuth2 (Google).  
-2️⃣ **Real-Time Chat Service** – Manages messaging and chat rooms using WebSockets.  
-3️⃣ **Presence Service** – Tracks user availability and online status.  
-4️⃣ **API Gateway** – Manages routing, security, and load balancing.  
+🔍 Ride Search by Location & Date
 
+📊 Ride Management Dashboard
+
+Built with RESTful principles and documented using OpenAPI (Swagger), this backend system ensures easy integration, scalability, and a great developer experience.
