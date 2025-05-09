@@ -1,0 +1,821 @@
+{
+	"info": {
+		"_postman_id": "5216a96d-7080-4fff-a632-de20e37bc831",
+		"name": "Rideshare API Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "39071716"
+	},
+	"item": [
+		{
+			"name": "Health Check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/health",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"health"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Register User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"pm.environment.set(\"userId\", jsonData.id);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"test7@example.com\",\n    \"password\": \"password123\",\n    \"firstName\": \"Test\",\n    \"lastName\": \"User\",\n    \"phoneNumber\": \"1234567890\",\n    \"dateOfBirth\": \"1990-01-01\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/users/register",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"pm.environment.set(\"userId\", jsonData.userId);",
+							"pm.environment.set(\"authToken\", jsonData.token);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"test7@example.com\",\n    \"password\": \"password123\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/users/login",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Vehicle",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"pm.environment.set(\"vehicleId\", jsonData.vehicleId);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"make\": \"Toyota\",\n    \"model\": \"Camry\",\n    \"year\": 2022,\n    \"color\": \"Blue\",\n    \"licensePlate\": \"TEST-123\",\n    \"capacity\": 4\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/vehicles",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"vehicles"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User Vehicles",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/vehicles",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"vehicles"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Ride",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"pm.environment.set(\"rideId\", jsonData.id);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"hostId\": \"{{userId}}\",  \n    \"vehicleId\": \"{{vehicleId}}\", \n    \"originAddress\": \"Central Park, New York\",\n    \"originLatitude\": 40.7812,\n    \"originLongitude\": -73.9665,\n    \"destinationAddress\": \"Times Square, New York\",\n    \"destinationLatitude\": 40.7580,\n    \"destinationLongitude\": -73.9855,\n    \"departureTime\": \"2025-04-20T10:00:00Z\",\n    \"estimatedArrivalTime\": \"2025-04-20T11:00:00Z\",\n    \"maxPassengers\": 3,\n    \"availableSeats\": 3,\n    \"pricePerSeat\": 15.00,\n    \"description\": \"Test ride\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/rides",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"rides"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Ride by ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/rides/{{rideId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"rides",
+						"{{rideId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Register Second User (Rider)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"pm.environment.set(\"riderId\", jsonData.userId);",
+							"pm.environment.set(\"riderToken\", jsonData.token);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"rider@example.com\",\n    \"password\": \"password123\",\n    \"firstName\": \"Test\",\n    \"lastName\": \"Rider\",\n    \"phoneNumber\": \"9876543210\",\n    \"dateOfBirth\": \"1995-01-01\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/users/register",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login Second User (Rider)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"pm.environment.set(\"riderId\", jsonData.userId);",
+							"pm.environment.set(\"riderToken\", jsonData.token);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"rider@example.com\",\n    \"password\": \"password123\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/users/login",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Request to Join Ride",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"pm.environment.set(\"requestId\", jsonData.requestId);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{riderToken}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"pickupAddress\": \"123 Pickup St, New York\",\n    \"pickupLatitude\": 40.7712,\n    \"pickupLongitude\": -73.9665,\n    \"seatsRequested\": 2,\n    \"message\": \"Can I join this ride?\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/rides/{{rideId}}/join",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"rides",
+						"{{rideId}}",
+						"join"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Rider's Requests",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{riderToken}}"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/requests",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"requests"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Ride Requests (as Host)",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/rides/{{rideId}}/requests",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"rides",
+						"{{rideId}}",
+						"requests"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Accept Join Request",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"status\": \"accepted\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/rides/{{rideId}}/requests/{{requestId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"rides",
+						"{{rideId}}",
+						"requests",
+						"{{requestId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Ride Passengers",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/rides/{{rideId}}/passengers",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"rides",
+						"{{rideId}}",
+						"passengers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Ride by ID (Check Available Seats)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/rides/{{rideId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"rides",
+						"{{rideId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Register Third User (Another Rider)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"pm.environment.set(\"rider2Id\", jsonData.userId);",
+							"pm.environment.set(\"rider2Token\", jsonData.token);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"rider2@example.com\",\n    \"password\": \"password123\",\n    \"firstName\": \"Another\",\n    \"lastName\": \"Rider\",\n    \"phoneNumber\": \"5555555555\",\n    \"dateOfBirth\": \"1992-01-01\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/users/register",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login Third User (Another Rider)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"pm.environment.set(\"rider2Id\", jsonData.userId);",
+							"pm.environment.set(\"rider2Token\", jsonData.token);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"rider2@example.com\",\n    \"password\": \"password123\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/users/login",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Second Request to Join Ride",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"pm.environment.set(\"request2Id\", jsonData.requestId);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{rider2Token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"pickupAddress\": \"456 Another St, New York\",\n    \"pickupLatitude\": 40.7612,\n    \"pickupLongitude\": -73.9565,\n    \"seatsRequested\": 1,\n    \"message\": \"I'd like to join too!\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/rides/{{rideId}}/join",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"rides",
+						"{{rideId}}",
+						"join"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Reject Join Request",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"status\": \"rejected\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/rides/{{rideId}}/requests/{{request2Id}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"rides",
+						"{{rideId}}",
+						"requests",
+						"{{request2Id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Third Request to Join Ride",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"pm.environment.set(\"request3Id\", jsonData.requestId);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{rider2Token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"pickupAddress\": \"789 Third St, New York\",\n    \"pickupLatitude\": 40.7512,\n    \"pickupLongitude\": -73.9465,\n    \"seatsRequested\": 1,\n    \"message\": \"Another request\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/rides/{{rideId}}/join",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"rides",
+						"{{rideId}}",
+						"join"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Cancel Join Request",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{rider2Token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"status\": \"cancelled\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/rides/{{rideId}}/requests/{{request3Id}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"rides",
+						"{{rideId}}",
+						"requests",
+						"{{request3Id}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080/api",
+			"type": "string"
+		},
+		{
+			"key": "authToken",
+			"value": "dummy-auth-token-for-testing",
+			"type": "string"
+		},
+		{
+			"key": "userId",
+			"value": "test-user-id-123",
+			"type": "string"
+		},
+		{
+			"key": "vehicleId",
+			"value": "test-vehicle-id-123",
+			"type": "string"
+		},
+		{
+			"key": "riderId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "riderToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "requestId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "rider2Id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "rider2Token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "request2Id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "request3Id",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

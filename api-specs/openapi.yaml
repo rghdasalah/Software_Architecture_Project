@@ -1,0 +1,354 @@
+openapi: 3.0.0
+info:
+  title: Student Ride-Sharing API
+  version: 1.0.0
+  description: REST API for coordinating rides among students using authentication, ride offering, joining, and searching.
+
+servers:
+  - url: https://api.rideshare.example.com/v1
+
+paths:
+  /auth/register:
+    post:
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '201':
+          description: User registered
+
+  /auth/login:
+    post:
+      summary: Log in user and return token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Authentication successful
+
+  /auth/oauth2:
+    get:
+      summary: OAuth2 login redirect
+      description: Start the OAuth2 authentication process
+      responses:
+        '302':
+          description: Redirect to OAuth provider
+
+  /users/{userId}:
+    get:
+      summary: Get user profile
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+
+    put:
+      summary: Update user profile
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+      responses:
+        '200':
+          description: Profile updated
+
+  /rides:
+    post:
+      summary: Create a new ride offer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RideOffer'
+      responses:
+        '201':
+          description: Ride created
+
+    get:
+      summary: List all rides
+      responses:
+        '200':
+          description: List of rides
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RideResponse'
+
+  /rides/{rideId}:
+    get:
+      summary: Get ride details
+      parameters:
+        - name: rideId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Ride details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RideResponse'
+
+    put:
+      summary: Update ride (e.g. visibility)
+      parameters:
+        - name: rideId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RideOffer'
+      responses:
+        '200':
+          description: Ride updated
+
+  /rides/{rideId}/join:
+    post:
+      summary: Request to join a ride
+      parameters:
+        - name: rideId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Join request submitted
+
+  /rides/{rideId}/requests:
+    get:
+      summary: Host views join requests
+      parameters:
+        - name: rideId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of join requests
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/JoinRequest'
+
+  /rides/{rideId}/requests/{requestId}:
+    put:
+      summary: Accept or reject a join request
+      parameters:
+        - name: rideId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: requestId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JoinDecision'
+      responses:
+        '200':
+          description: Request updated
+
+  /rides/search:
+    get:
+      summary: Search for rides by location
+      parameters:
+        - name: start
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: end
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: radius
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 10
+            description: Radius in kilometers
+      responses:
+        '200':
+          description: Matching rides
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RideResponse'
+
+  /dashboard/host:
+    get:
+      summary: View rides created by the host
+      responses:
+        '200':
+          description: Host rides
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RideResponse'
+
+  /dashboard/user:
+    get:
+      summary: View rides user has joined
+      responses:
+        '200':
+          description: User joined rides
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RideResponse'
+
+components:
+  schemas:
+    RegisterRequest:
+      type: object
+      required: [name, email, password]
+      properties:
+        name:
+          type: string
+        gender:
+          type: string
+        contactInfo:
+          type: string
+        phoneNumber:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+
+    UserProfile:
+      type: object
+      properties:
+        name:
+          type: string
+        gender:
+          type: string
+        contactInfo:
+          type: string
+        phoneNumber:
+          type: string
+
+    RideOffer:
+      type: object
+      required: [startPoint, endPoint, dateTime, transportMethod]
+      properties:
+        startPoint:
+          type: string
+        endPoint:
+          type: string
+        dateTime:
+          type: string
+          format: date-time
+        transportMethod:
+          type: string
+        description:
+          type: string
+        whatsappLink:
+          type: string
+        status:
+          type: string
+          enum: [available, not_available]
+
+    RideResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        host:
+          $ref: '#/components/schemas/UserProfile'
+        startPoint:
+          type: string
+        endPoint:
+          type: string
+        dateTime:
+          type: string
+        transportMethod:
+          type: string
+        description:
+          type: string
+        whatsappLink:
+          type: string
+        status:
+          type: string
+        contributors:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserProfile'
+
+    JoinRequest:
+      type: object
+      properties:
+        id:
+          type: string
+        user:
+          $ref: '#/components/schemas/UserProfile'
+        status:
+          type: string
+          enum: [pending, accepted, rejected]
+
+    JoinDecision:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+          enum: [accepted, rejected]
