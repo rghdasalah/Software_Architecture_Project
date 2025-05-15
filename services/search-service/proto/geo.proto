@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package proto;
+
+option go_package = "search-service/proto;proto";
+
+message Point {
+  double lat = 1;
+  double lng = 2;
+}
+
+message Ride {
+  string ride_id = 1;
+  Point start_point = 2;
+  Point end_point = 3;
+}
+
+enum MatchType {
+  START = 0;
+  END = 1;
+}
+
+message FilterRequest {
+  Point point = 1;
+  repeated Ride rides = 2;
+  MatchType match_type = 3;
+}
+
+message FilterResponse {
+  repeated Ride rides = 1;
+}
+
+service GeoDistanceService {
+  rpc FilterRidesByProximity(FilterRequest) returns (FilterResponse);
+}
