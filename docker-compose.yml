@@ -1,0 +1,57 @@
+#version: "3"
+services:
+  db:
+    image: postgres
+    container_name: auth-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: authdb
+    ports:
+      - "5432:5432"
+    networks:
+      - ride-sharing-network
+
+  auth-service:
+    build:
+      context: ./services/auth-service
+    container_name: auth-service
+    ports:
+      - "8083:8083"
+    env_file:
+      - ./services/auth-service/.env
+    depends_on:
+      - db
+    networks:
+      - ride-sharing-network
+
+  search-service:
+    build: ./services/search-service
+    ports:
+      - "8080:8080"
+    environment:
+      - REDIS_ADDRESS=redis:6379  # The hostname for Redis within the Docker network
+      - GEO_GRPC_ADDRESS=geo-distance-service:50051  # Set the hostname as the service name
+    depends_on:
+      - geo-distance-service
+      - redis
+    networks:
+      - ride-sharing-network
+
+  geo-distance-service:
+    build: ./services/geo-distance-service
+    ports:
+      - "50051:50051"
+    networks:
+      - ride-sharing-network
+
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - ride-sharing-network
+
+networks:
+  ride-sharing-network:
+    driver: bridge
